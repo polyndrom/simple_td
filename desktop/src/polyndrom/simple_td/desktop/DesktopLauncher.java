@@ -7,6 +7,8 @@ import polyndrom.simple_td.Main;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.height = 624;
+		config.width = 1056;
 		new LwjglApplication(new Main(), config);
 	}
 }

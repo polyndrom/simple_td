@@ -1,12 +1,13 @@
 package polyndrom.simple_td;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
+import polyndrom.simple_td.tower.Tower;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +18,9 @@ public class Level implements Disposable {
 
     private int width;
     private int height;
-    private Position basePosition;
-    private Position enemySpawnPosition;
-    private Map<Character, Texture> textures;
+    private Vector2 base;
+    private Vector2 enemySpawn;
+    private Map<Character, Texture> texturesMapper;
     private List<List<Character>> charMap;
 
     public static Level load(int levelId) {
@@ -38,69 +39,65 @@ public class Level implements Disposable {
         return new LevelBuilder()
                 .width(width)
                 .height(height)
-                .basePosition(new Position(root.get("base").getInt("x"), root.get("base").getInt("x")))
-                .enemySpawnPosition(new Position((float) root.get("enemy_spawn").getInt("x"),
+                .base(new Vector2(root.get("base").getInt("x"), root.get("base").getInt("x")))
+                .enemySpawn(new Vector2((float) root.get("enemy_spawn").getInt("x"),
                                                  (float) root.get("enemy_spawn").getInt("x")))
-                .textures(loadTextures())
                 .charMap(charMap)
                 .build();
     }
 
-    private Level(int width, int height, Position basePosition, Position enemySpawnPosition,
-                  Map<Character, Texture> textures, List<List<Character>> charMap) {
-        this.width = width;
-        this.height = height;
-        this.basePosition = basePosition;
-        this.enemySpawnPosition = enemySpawnPosition;
-        this.textures = textures;
-        this.charMap = charMap;
+    public Vector2 getBase() {
+        return base;
     }
 
-    private static Map<Character, Texture> loadTextures() {
-        Map<Character, FileHandle> charMapper = new TreeMap<>();
-        Map<Character, Texture> textureMapper = new TreeMap<>();
-        charMapper.put('#', Utils.getSpriteFile("empty_field"));
-        charMapper.put('h', Utils.getSpriteFile("road_left_to_right"));
-        charMapper.put('v', Utils.getSpriteFile("road_down_to_up"));
-        charMapper.put('1', Utils.getSpriteFile("road_up_to_right"));
-        charMapper.put('2', Utils.getSpriteFile("road_down_to_right"));
-        charMapper.put('3', Utils.getSpriteFile("road_down_to_left"));
-        charMapper.put('4', Utils.getSpriteFile("road_up_to_left"));
-        charMapper.put('+', Utils.getSpriteFile("road_4x"));
-        charMapper.put('B', Utils.getSpriteFile("base"));
-        for (Character ch: charMapper.keySet()) {
-            textureMapper.put(ch, new Texture(charMapper.get(ch)));
-        }
-        return textureMapper;
+    public Vector2 getEnemySpawn() {
+        return enemySpawn;
+    }
+
+    private Level(int width, int height, Vector2 base,
+                  Vector2 enemySpawn, List<List<Character>> charMap) {
+        this.width = width;
+        this.height = height;
+        this.base = base;
+        this.enemySpawn = enemySpawn;
+        this.charMap = charMap;
+        loadMapTextures();
+    }
+
+    private void loadMapTextures() {
+        texturesMapper = new TreeMap<>();
+        texturesMapper.put('#', AssetsManager.getTexture("empty_field"));
+        texturesMapper.put('h', AssetsManager.getTexture("road_left_to_right"));
+        texturesMapper.put('v', AssetsManager.getTexture("road_down_to_up"));
+        texturesMapper.put('1', AssetsManager.getTexture("road_up_to_right"));
+        texturesMapper.put('2', AssetsManager.getTexture("road_down_to_right"));
+        texturesMapper.put('3', AssetsManager.getTexture("road_down_to_left"));
+        texturesMapper.put('4', AssetsManager.getTexture("road_up_to_left"));
+        texturesMapper.put('+', AssetsManager.getTexture("road_4x"));
+        texturesMapper.put('B', AssetsManager.getTexture("base"));
     }
 
     public void renderMap(SpriteBatch batch) {
-        batch.begin();
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 float x = Utils.MC2SC(j);
                 float y = Gdx.graphics.getHeight() - Constants.BLOCK_HEIGHT - Utils.MC2SC(i);
-                batch.draw(textures.get(charMap.get(i).get(j)), x, y, Constants.BLOCK_WIDTH, Constants.BLOCK_HEIGHT);
+                batch.draw(texturesMapper.get(charMap.get(i).get(j)), x, y, Constants.BLOCK_WIDTH, Constants.BLOCK_HEIGHT);
             }
         }
-        // batch.draw(textures.get('B'), Utils.MC2SC(basePosition.x), Utils.MC2SC(basePosition.y));
-        batch.end();
     }
 
     @Override
     public void dispose() {
-        for (Texture texture: textures.values()) {
-            texture.dispose();
-        }
+
     }
 
     private static class LevelBuilder {
 
         private int width;
         private int height;
-        private Position basePosition;
-        private Position enemySpawnPosition;
-        private Map<Character, Texture> textures;
+        private Vector2 base;
+        private Vector2 enemySpawn;
         private List<List<Character>> charMap;
 
         private LevelBuilder width(int width) {
@@ -113,18 +110,13 @@ public class Level implements Disposable {
             return this;
         }
 
-        private LevelBuilder basePosition(Position basePosition) {
-            this.basePosition = basePosition;
+        private LevelBuilder base(Vector2 base) {
+            this.base = base;
             return this;
         }
 
-        private LevelBuilder enemySpawnPosition(Position enemySpawnPosition) {
-            this.enemySpawnPosition = enemySpawnPosition;
-            return this;
-        }
-
-        private LevelBuilder textures(Map<Character, Texture> textures) {
-            this.textures = textures;
+        private LevelBuilder enemySpawn(Vector2 enemySpawn) {
+            this.enemySpawn = enemySpawn;
             return this;
         }
 
@@ -134,7 +126,7 @@ public class Level implements Disposable {
         }
 
         private Level build() {
-            return new Level(width, height, basePosition, enemySpawnPosition, textures, charMap);
+            return new Level(width, height, base, enemySpawn, charMap);
         }
 
     }

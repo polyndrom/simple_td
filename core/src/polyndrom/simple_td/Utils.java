@@ -3,15 +3,7 @@ package polyndrom.simple_td;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.MathUtils;
-
-class Position {
-    public float x;
-    public float y;
-    public Position(float x, float y) {
-        this.x = x;
-        this.y = y;
-    }
-}
+import com.badlogic.gdx.math.Vector2;
 
 public class Utils {
 
@@ -35,29 +27,33 @@ public class Utils {
         return getFromAssets(String.format("sprites/%s.%s", spriteName, ext));
     }
 
+    // Map coordinate to screen coordinate
     public static float MC2SC(int mapCoordinate) {
         return MC2SC((float) mapCoordinate);
     }
 
+    // Map coordinate to screen coordinate
     public static float MC2SC(float mapCoordinate) {
         return mapCoordinate * Constants.BLOCK_WIDTH;
     }
 
+    // Screen coordinate to map coordinate
     public static int SC2MC(float screenCoordinate) {
         return MathUtils.floor(screenCoordinate / Constants.BLOCK_WIDTH);
     }
 
+    // Screen coordinate to map coordinate
     public static int SC2MC(int screenCoordinate) {
         return SC2MC((float) screenCoordinate);
     }
 
-    public static Position mapPositionToScreenPosition(Position mapPosition) {
-        return new Position(MC2SC((int) mapPosition.x),
+    public static Vector2 mapPositionToScreenPosition(Vector2 mapPosition) {
+        return new Vector2(MC2SC((int) mapPosition.x),
                             MC2SC((int) mapPosition.y));
     }
 
-    public static Position screenPositionToMapPosition(Position screenPosition) {
-        return new Position(SC2MC(screenPosition.x),
+    public static Vector2 screenPositionToMapPosition(Vector2 screenPosition) {
+        return new Vector2(SC2MC(screenPosition.x),
                             SC2MC(screenPosition.y));
     }
 

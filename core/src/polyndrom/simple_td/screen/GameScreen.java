@@ -3,15 +3,11 @@ package polyndrom.simple_td.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import polyndrom.simple_td.AssetsManager;
-import polyndrom.simple_td.GameHandler;
-import polyndrom.simple_td.Level;
-import polyndrom.simple_td.Utils;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
+import polyndrom.simple_td.*;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -30,7 +26,8 @@ public class GameScreen implements Screen {
         camera.position.y = Gdx.graphics.getHeight() / 2f;
         batch = new SpriteBatch();
         AssetsManager.loadTextures();
-        level = Level.load(1);
+        level = new Level(1);
+        PathFinder.find(level, Utils.SP2MP(level.getEnemySpawn()), Utils.SP2MP(level.getBase()));
         gameHandler = new GameHandler(level.getBase(), level.getEnemySpawn());
     }
 
@@ -41,7 +38,7 @@ public class GameScreen implements Screen {
 
         batch.setProjectionMatrix(camera.combined);
         camera.update();
-
+        
         batch.begin();
         level.renderMap(batch);
         gameHandler.render(batch);

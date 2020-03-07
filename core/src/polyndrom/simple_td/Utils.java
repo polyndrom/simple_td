@@ -19,14 +19,6 @@ public class Utils {
         return getFromAssets(String.format("levels/%d/map.txt", levelId));
     }
 
-    public static FileHandle getSpriteFile(String spriteName) {
-        return getSpriteFile(spriteName, "png");
-    }
-
-    public static FileHandle getSpriteFile(String spriteName, String ext) {
-        return getFromAssets(String.format("sprites/%s.%s", spriteName, ext));
-    }
-
     // Map coordinate to screen coordinate
     public static float MC2SC(int mapCoordinate) {
         return MC2SC((float) mapCoordinate);
@@ -47,12 +39,14 @@ public class Utils {
         return SC2MC((float) screenCoordinate);
     }
 
-    public static Vector2 mapPositionToScreenPosition(Vector2 mapPosition) {
+    // Map position to screen position
+    public static Vector2 MP2SP(Vector2 mapPosition) {
         return new Vector2(MC2SC((int) mapPosition.x),
                             MC2SC((int) mapPosition.y));
     }
 
-    public static Vector2 screenPositionToMapPosition(Vector2 screenPosition) {
+    // Screen position to map position
+    public static Vector2 SP2MP(Vector2 screenPosition) {
         return new Vector2(SC2MC(screenPosition.x),
                             SC2MC(screenPosition.y));
     }

@@ -15,7 +15,9 @@ public class AssetsManager {
     public static void loadTextures() {
         FileHandle[] texturesFiles = Gdx.files.internal("sprites/").list(".png");
         for (FileHandle textureFile: texturesFiles) {
-            textures.put(textureFile.nameWithoutExtension(), new Texture(textureFile));
+            Texture texture = new Texture(textureFile);
+            texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+            textures.put(textureFile.nameWithoutExtension(), texture);
         }
     }
 

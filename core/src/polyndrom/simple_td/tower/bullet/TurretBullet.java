@@ -1,5 +1,6 @@
 package polyndrom.simple_td.tower.bullet;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -10,26 +11,30 @@ import polyndrom.simple_td.tower.Tower;
 
 public class TurretBullet extends Bullet {
 
+    private ShapeRenderer shapeRenderer;
+
     public TurretBullet(Tower source, Enemy target) {
         super(source, target);
-    }
-
-    @Override
-    public int speed() {
-        return 5;
+        shapeRenderer = new ShapeRenderer();
     }
 
     @Override
     public void render(SpriteBatch batch) {
         batch.end();
-        ShapeRenderer shapeRenderer = new ShapeRenderer();
-        shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.RED);
-        shapeRenderer.rect(position.x, position.y, 2, 2);
+        shapeRenderer.rect(position.x, position.y, 4, 4);
         shapeRenderer.end();
         batch.begin();
-        position.add(speed(), speed());
     }
 
+    @Override
+    public int speed() {
+        return 400;
+    }
+
+    @Override
+    public void dispose() {
+        shapeRenderer.dispose();
+    }
 }

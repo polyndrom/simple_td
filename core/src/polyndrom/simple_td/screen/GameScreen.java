@@ -27,8 +27,7 @@ public class GameScreen implements Screen {
         batch = new SpriteBatch();
         AssetsManager.loadTextures();
         level = new Level(1);
-        PathFinder.find(level, Utils.SP2MP(level.getEnemySpawn()), Utils.SP2MP(level.getBase()));
-        gameHandler = new GameHandler(level.getBase(), level.getEnemySpawn());
+        gameHandler = new GameHandler(level);
     }
 
     @Override
@@ -38,7 +37,7 @@ public class GameScreen implements Screen {
 
         batch.setProjectionMatrix(camera.combined);
         camera.update();
-        
+
         batch.begin();
         level.renderMap(batch);
         gameHandler.render(batch);

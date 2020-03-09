@@ -23,7 +23,7 @@ public class TurretBullet extends Bullet {
         batch.end();
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.RED);
-        shapeRenderer.rect(position.x, position.y, 4, 4);
+        shapeRenderer.rect(position.x - 1, position.y - 1, 3, 3);
         shapeRenderer.end();
         batch.begin();
     }

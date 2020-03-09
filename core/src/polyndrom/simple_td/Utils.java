@@ -31,7 +31,7 @@ public class Utils {
 
     // Screen coordinate to map coordinate
     public static int SC2MC(float screenCoordinate) {
-        return MathUtils.floor(screenCoordinate / Constants.BLOCK_WIDTH);
+        return MathUtils.floor(screenCoordinate / (float) Constants.BLOCK_WIDTH);
     }
 
     // Screen coordinate to map coordinate
@@ -41,14 +41,14 @@ public class Utils {
 
     // Map position to screen position
     public static Vector2 MP2SP(Vector2 mapPosition) {
-        return new Vector2(MC2SC((int) mapPosition.x),
-                            MC2SC((int) mapPosition.y));
+        return new Vector2(MC2SC(mapPosition.x),
+                           MC2SC(mapPosition.y));
     }
 
     // Screen position to map position
     public static Vector2 SP2MP(Vector2 screenPosition) {
         return new Vector2(SC2MC(screenPosition.x),
-                            SC2MC(screenPosition.y));
+                           SC2MC(screenPosition.y));
     }
 
 }
